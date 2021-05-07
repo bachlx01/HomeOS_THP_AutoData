@@ -1,0 +1,54 @@
+tbody td {
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: all linear .2s;
+}
+
+tbody td:hover {
+    overflow: visible;
+    z-index: 999;
+}
+
+td, th {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+.td--name {
+   width: 10%;
+   text-align: left;
+}
+
+.td--link {
+    text-align: left;
+}
+
+.td--interval {
+    width: 5%;
+}
+
+.td--stream {
+    width: 10%;
+}
+
+.td--timer {
+    width: 5%;
+}
+
+.td--start-time {
+    width: 10%;
+}
+
+.td--end-time {
+    width: 10%;
+}
+
+.td--edit {
+    width: 10%;
+}
+
