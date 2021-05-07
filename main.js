@@ -47,29 +47,35 @@ var apiList = [
     }
 ];
 
-writeRow();
-
 $(function () { //document.ready
 
-    //New Work Order
-    $("#newWO").click(function(){
-    var orderID = $("#orderID").val();
-    $.ajax({
-        url: linkNewWO + orderID,
-        success: function() {
-            alert("Done!");
-        },
-        error: function() {
-            alert("Fail!");
-        }
-    })
+    //Create table from list API
+    writeRow();
+
+    //Add new Work Order
+    $("#newWO").click(function () {
+        var orderID = $("#orderID").val();
+        $.ajax({
+            url: linkNewWO + orderID,
+            success: function () {
+                alert("Done!");
+            },
+            error: function () {
+                alert("Fail!");
+            }
+        })
     })
 
+    // Add new API
     var addAPI = $("#addAPI");
-    addAPI.click(function () {      //click add API
+    addAPI.click(function () {
 
         var apiName = $("#apiName").val();
         var apiLink = $("#apiLink").val();
+        if (apiLink == "") {
+            alert("Chưa nhập API");
+            return;
+        }
         var interval = $("#interval").val();
         if (interval <= 0) {
             alert("Nhập interval lớn hơn 0");
@@ -87,20 +93,16 @@ $(function () { //document.ready
 
     })
 
-    // Delete row
-    $(".btn-delete").click(function(){
-        $(this).parent().parent().remove();
-    })
-
-    // Stream click
-    $(".btn-stream").click(function() {
-        var element = $(this);
-        stream(element);
-    })
 })
 
+// Delete row
+function deleteRow(element) {
+    $(element).parent().parent().remove();
+}
 
-function stream(element) {
+function stream(e) {
+
+    var element = $(e);
 
     var timer = 1;
 
@@ -113,18 +115,17 @@ function stream(element) {
     var intervalTime = rowElement.children(".td--interval").children("input").val();
 
     if (btnText == "Start") {
-        
-        
         $.ajax({ // Check valid urlAPI, if success run loop.
             url: urlAPI,
+            method: "GET",
             success: function () {
                 rowElement.children(".td--timer").html("(" + timer++ + ")");
                 rowElement.children(".td--start-time").html(getCurrentTime(new Date()));
                 rowElement.children(".td--end-time").html("-- : -- : --");
                 element // Switch button text to Stop
-                .html("Stop")
-                .removeClass("btn-primary")
-                .addClass("btn-success");
+                    .html("Stop")
+                    .removeClass("btn-primary")
+                    .addClass("btn-success");
 
                 timeOut();
             },
@@ -167,9 +168,6 @@ function stream(element) {
 
 }
 
-
-
-
 function writeRow() {
     var html = "";
     for (var i = 0; i < apiList.length; i++) {
@@ -180,17 +178,17 @@ function writeRow() {
 
 function createHtml(name, link, interval) {
     return "<tr>"
-            + "<td class='td--name'>" + name + " </td>"
-            + "<td class='td--link'>" + link + " </td>"
-            + "<td class='td--interval'><input type='text' class='form-control' value='" + interval + "'></td>"
-            + "<td><button style='width:100px;' class='btn-stream btn btn-primary'>Start</button></td>"
-            + "<td class='td--timer'></td>"
-            + "<td class='td--start-time'>-- : -- : --</td>"
-            + "<td class='td--end-time'>-- : -- : --</td>"
-            + "<td><button style='width:100px;' class='btn btn-delete btn-danger'>Delete</button></td>"
-            + "</tr>";
+        + "<td class='td--name'>" + name + " </td>"
+        + "<td class='td--link'>" + link + " </td>"
+        + "<td class='td--interval'><input type='text' class='form-control' value='" + interval + "'></td>"
+        + "<td><button style='width:100px;' class='btn-stream btn btn-primary' onclick='stream(this)'>Start</button></td>"
+        + "<td class='td--timer'></td>"
+        + "<td class='td--start-time'>-- : -- : --</td>"
+        + "<td class='td--end-time'>-- : -- : --</td>"
+        + "<td><button style='width:100px;' class='btn btn-delete btn-danger' onclick='deleteRow(this)'>Delete</button></td>"
+        + "</tr>";
 }
 
-function getCurrentTime (date) {
+function getCurrentTime(date) {
     return date.getHours().toString() + " : " + date.getMinutes().toString() + " : " + date.getSeconds().toString();
 }
