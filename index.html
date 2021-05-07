@@ -13,35 +13,52 @@
 <body>
     
     <div class="container-fluid">
-        <h3 class="text-info my-4">API TỰ ĐỘNG TẠO DỮ LIỆU CHO THINGWORX<div class="form-inline ml-auto">
-            <select class="form-control mr-2" name="new-wo" id="orderID">
-                <option value="BUF_NO">BUF_NO</option>
-                <option value="TRA_XANH">TRA_XANH</option>
-                <option value="WATER_NO">WATER_NO</option>
-            </select>
-            <button id="newWO" class="btn btn-primary">New WO</button>
-        </div></h3>
+        <h3 class="text-info my-4">API TỰ ĐỘNG TẠO DỮ LIỆU CHO THINGWORX</h3>
         <!-- Start Form input new API -->
         <div class="row">
         <div class="form-inline mb-3 mx-auto">
-            
-            <div class="form-group col-3">
+            <div class="form-group col-2">
                 <label for="#apiName">API Name: </label>
-                <input type="text" class="form-control ml-1 col-7" id="apiName">
-            </div>
-            <div class="form-group">
-                <label for="#apiLink">API link: </label>
-                <input type="text" class="form-control ml-1" id="apiLink">
+                <input type="text" class="form-control ml-2 col-6" id="apiName">
             </div>
             <div class="form-group col-3">
-                <label for="#interval">Interval (s): </label>
-                <input type="text" class="form-control ml-1 col-6" id="interval">
+                <label for="#apiLink">API link: </label>
+                <input type="text" class="form-control ml-2 col-7" id="apiLink">
             </div>
-            <button class="btn btn-primary px-4" id="addAPI">Add</button>
+            <div class="form-group col-3">
+                <label for="#apiParam">Parameters: </label>
+                <input type="text" class="form-control ml-2 col-7" id="apiParam">
+            </div>
+            <div class="form-group col-2">
+                <label for="#interval">Interval (s): </label>
+                <input type="text" class="form-control ml-2 col-6" id="interval">
+            </div>
+            <div class="form-group col-1">
+                <button class="btn btn-primary px-4" id="addAPI">Add</button>
+            </div>
+            
         </div>
         </div>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
         <!-- End Form input new API -->
 
+        <!-- New WO and Start all -->
+        <div class="row mx-4 justify-content-between">
+            <div class="form-group">
+                <div class="form-inline">
+                    <select class="form-control mr-2" name="new-wo" id="orderID">
+                        <option value="BUF_NO">BUF_NO</option>
+                        <option value="TRA_XANH">TRA_XANH</option>
+                        <option value="WATER_NO">WATER_NO</option>
+                    </select>
+                    <button id="newWO" class="btn btn-primary">New WO</button>
+                </div>
+            </div>
+            <div class="start-all row justify-content-right my-2">
+                    <button class="btn btn-primary btn-lg" id="btn--startAll"><b>Start All</b></button>
+                    <button class="btn btn-danger btn-lg mx-3" id="btn--stopAll"><b>Stop All</b></button>
+            </div>
+        </div>
         <!-- Start table API -->
         <div class="content">
             <table class="table table-striped">
@@ -49,11 +66,12 @@
                     <tr>
                         <th class="td--name">API Name</th>
                         <th class="td--link">API Link</th>
+                        <th class="td--param">Parameter</th>
                         <th class="td--interval" style="text-align: center;">Interval</th>
-                        <th class="td--stream">Stream</th>
                         <th class="td--timer">Counter</th>
                         <th class="td--start-time">Start Time</th>
                         <th class="td--end-time">End Time</th>
+                        <th class="td--stream">Stream</th>
                         <th class="td--edit">Edit</th>
                     </tr>
                 </thead>

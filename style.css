@@ -28,6 +28,10 @@ h3 {
     text-align: left;
 }
 
+.td--param {
+    width: 5%;
+}
+
 .td--interval {
     width: 5%;
 }

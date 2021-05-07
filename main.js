@@ -47,13 +47,14 @@ var apiList = [
     }
 ];
 
-$(function () { //document.ready
+//document.ready
+$(function () { 
 
     //Create table from list API
     writeRow();
 
     //Add new Work Order
-    $("#newWO").click(function () {
+    $("#newWO").click(function() {
         var orderID = $("#orderID").val();
         $.ajax({
             url: linkNewWO + orderID,
@@ -68,7 +69,7 @@ $(function () { //document.ready
 
     // Add new API
     var addAPI = $("#addAPI");
-    addAPI.click(function () {
+    addAPI.click(function() {
 
         var apiName = $("#apiName").val();
         var apiLink = $("#apiLink").val();
@@ -93,13 +94,37 @@ $(function () { //document.ready
 
     })
 
+    // Start All
+    $("#btn--startAll").click(function () {
+
+        $(".btn-stream").each(function () {
+
+            if ($(this).html() == "Start") {
+
+                stream(this);
+            }
+        })
+    })
+
+    // Stop All
+    $("#btn--stopAll").click(function () {
+        $(".btn-stream").each(function () {
+
+            if ($(this).html() == "Stop") {
+
+                stream(this);
+            }
+        })
+    })
 })
+// End document.ready
 
 // Delete row
 function deleteRow(element) {
     $(element).parent().parent().remove();
 }
 
+// Start and stop API
 function stream(e) {
 
     var element = $(e);
@@ -165,9 +190,9 @@ function stream(e) {
             }
         })
     }
-
 }
 
+// Write table
 function writeRow() {
     var html = "";
     for (var i = 0; i < apiList.length; i++) {
@@ -176,15 +201,17 @@ function writeRow() {
     $("#table-content").append(html);
 }
 
+// Create a row
 function createHtml(name, link, interval) {
     return "<tr>"
         + "<td class='td--name'>" + name + " </td>"
         + "<td class='td--link'>" + link + " </td>"
+        + "<td class='td--param'><input type='text' class='form-control'></td>"
         + "<td class='td--interval'><input type='text' class='form-control' value='" + interval + "'></td>"
-        + "<td><button style='width:100px;' class='btn-stream btn btn-primary' onclick='stream(this)'>Start</button></td>"
         + "<td class='td--timer'></td>"
         + "<td class='td--start-time'>-- : -- : --</td>"
         + "<td class='td--end-time'>-- : -- : --</td>"
+        + "<td><button style='width:100px;' class='btn-stream btn btn-primary' onclick='stream(this)'>Start</button></td>"
         + "<td><button style='width:100px;' class='btn btn-delete btn-danger' onclick='deleteRow(this)'>Delete</button></td>"
         + "</tr>";
 }
