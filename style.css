@@ -1,15 +1,8 @@
 tbody td {
     max-width: 100px;
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    transition: all linear .2s;
 }
 
-tbody td:hover {
-    overflow: visible;
-    z-index: 999;
-}
 
 td, th {
     text-align: center;
@@ -22,10 +15,29 @@ h3 {
 .td--name {
    width: 10%;
    text-align: left;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   transition: all linear .2s;
+}
+
+.td--name:hover {
+    overflow: visible;
+    z-index: 999;
+    text-shadow: 1px 1px 3px blue;
 }
 
 .td--link {
     text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: all linear .2s;
+}
+
+
+.td--link:hover {
+    overflow: visible;
+    z-index: 999;
+    text-shadow: 1px 1px 3px blue;
 }
 
 .td--param {

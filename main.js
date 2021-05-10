@@ -1,4 +1,5 @@
 var linkNewWO = "https://erp.homeos.vn/service/service.svc/ApiServicePublic/New_WorkOrder/GOODS=";
+var linkStartWO = "https://erp.homeos.vn/service/service.svc/ApiServicePublic/Execute_WorkOrder/QUANTITY=";
 var apiList = [
     {
         "name": "Generate30SWT",
@@ -48,38 +49,95 @@ var apiList = [
 ];
 
 //document.ready
-$(function () { 
+$(function () {
 
     //Create table from list API
     writeRow();
 
     //Add new Work Order
-    $("#newWO").click(function() {
+    $("#startWO").click(function () {
+
         var orderID = $("#orderID").val();
+        var orderQuantity = $("#orderQuantity").val();
+        if (orderQuantity == "") {
+            showPopUp("Nhập số lượng sản xuất!");
+            return;
+        }
         $.ajax({
-            url: linkNewWO + orderID,
-            success: function () {
-                alert("Done!");
+            // call API create Work Order; API: New_WorkOrder
+            url: linkNewWO + orderID + ",QUANTITY=" + orderQuantity,
+            success: function (d) {
+                var data = JSON.parse(d);
+                var message = data[0].MESSAGE;
+                var state = data[0].STATE_ID;
+
+                if (state == 1) {
+                    showPopUp( "Đang tiến hành Work Order: " + message);
+                } else {
+                    //Call API change state to START; API: Execute_API/API_NAME=New_WorkOrder,STATE=1
+                    $.ajax({
+                        url: "https://erp.homeos.vn/service/service.svc/ApiServicePublic/Execute_API/API_NAME=New_WorkOrder,STATE=1",
+                        error: function () {
+                            showPopUp("Fail to change state API 'Execute_WorkOrder'");
+                        }
+                    })
+
+                    // Show loading near button Creat
+                    $("#workOrderRun")
+                    .addClass("text-warning")
+                    .html(message + " is running!");
+                    $("#spinner").addClass("spinner-border text-warning");
+
+                    // call API start Work Order
+                    $.ajax({
+                        url: linkStartWO + orderQuantity,
+                        success: function (d) {
+                            var data = JSON.parse(d);
+                            var workOrder = data[0].Column1;
+                            $("#spinner").removeClass("spinner-border text-warning");
+                            $("#workOrderRun")
+                            .removeClass("text-warning")
+                            .addClass("text-success")
+                            .html(workOrder + " is done!");
+                            $("#orderQuantity").val("");
+
+                            // call API change state to STOP; API: Execute_API/API_NAME=New_WorkOrder,STATE=0"
+                            $.ajax({
+                                url: "https://erp.homeos.vn/service/service.svc/ApiServicePublic/Execute_API/API_NAME=New_WorkOrder,STATE=0",
+                                error: function(){
+                                    showPopUp("Fail to change state API 'New_WorkOrder'");
+                                }
+                            })
+                        },
+                        error: function () {
+                            showPopUp("Start WO Fail!");
+                        }
+                    })
+
+                }
+
+
             },
             error: function () {
-                alert("Fail!");
+                showPopUp("Create WO Fail!");
             }
         })
+
     })
 
     // Add new API
     var addAPI = $("#addAPI");
-    addAPI.click(function() {
+    addAPI.click(function () {
 
         var apiName = $("#apiName").val();
         var apiLink = $("#apiLink").val();
         if (apiLink == "") {
-            alert("Chưa nhập API");
+            showPopUp("Chưa nhập API");
             return;
         }
         var interval = $("#interval").val();
         if (interval <= 0) {
-            alert("Nhập interval lớn hơn 0");
+            showPopUp("Nhập interval lớn hơn 0");
             return;
         }
 
@@ -155,7 +213,7 @@ function stream(e) {
                 timeOut();
             },
             error: function () {
-                alert("Địa chỉ API sai!");
+                showPopUp("Địa chỉ API sai!");
             }
         })
 
@@ -211,11 +269,19 @@ function createHtml(name, link, interval) {
         + "<td class='td--timer'></td>"
         + "<td class='td--start-time'>-- : -- : --</td>"
         + "<td class='td--end-time'>-- : -- : --</td>"
-        + "<td><button style='width:100px;' class='btn-stream btn btn-primary' onclick='stream(this)'>Start</button></td>"
-        + "<td><button style='width:100px;' class='btn btn-delete btn-danger' onclick='deleteRow(this)'>Delete</button></td>"
+        + "<td><button style='width:80px;' class='btn-stream btn btn-primary' onclick='stream(this)'>Start</button></td>"
+        + "<td><button style='width:80px;' class='btn btn-delete btn-danger' onclick='deleteRow(this)'>Delete</button></td>"
         + "</tr>";
 }
 
 function getCurrentTime(date) {
     return date.getHours().toString() + " : " + date.getMinutes().toString() + " : " + date.getSeconds().toString();
+}
+
+function showPopUp(content, timeOut = 2) {
+    $(".modal-body").html(content);
+    $(".modal").modal("show");
+    setTimeout(function () {
+        $(".modal").modal("hide");
+    }, timeOut * 1000)
 }
